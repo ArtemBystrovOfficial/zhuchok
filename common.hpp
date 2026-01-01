@@ -23,6 +23,7 @@ public:
   bool isWall();
 
 private:
+private:
   CellType m_type = CellType::Empty;
 };
 
