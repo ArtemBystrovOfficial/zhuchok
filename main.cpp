@@ -1,7 +1,8 @@
 #include "GameRunner.hpp"
+#include <MapGenerator.hpp>
 #include <iostream>
 
 int main() {
-    common::MockMap mp(1,2);
-    std::cout << game_runner::GameRunner(mp);
+    map_generator::SomeGenerator generator;
+    generator.generate(5,6);
 }

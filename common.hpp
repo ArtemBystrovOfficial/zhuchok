@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace common {
 
 class ConstMap {
@@ -8,6 +10,8 @@ class ConstMap {
 
     virtual bool isWall(int x, int y) = 0;
 };
+
+using const_map_ptr = std::unique_ptr<ConstMap>;
 
 class MockMap : public ConstMap {
     public:
