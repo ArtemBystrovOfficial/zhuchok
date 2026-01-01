@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES
     main.cpp
     GameRunner.cpp
+    common.cpp
 )
 
 set(HEADERS

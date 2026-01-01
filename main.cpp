@@ -1,8 +1,8 @@
 #include "GameRunner.hpp"
-#include <MapGenerator.hpp>
+#include "common.hpp"
 #include <iostream>
 
 int main() {
-    map_generator::SomeGenerator generator;
-    generator.generate(5,6);
+  auto mp = common::MockMap({{' ', 'W'}, {'W', ' '}});
+  std::cout << game_runner::GameRunner(mp);
 }

@@ -1,25 +1,37 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 namespace common {
 
-class ConstMap {
-    public:
-    ConstMap(int w, int h) {}
+enum class CellType : char { Empty = ' ', Wall = 'W', Bug = 'B' };
 
-    virtual bool isWall(int x, int y) = 0;
+class Cell {
+public:
+  Cell(char cell_type);
+  ~Cell() = default;
+
+  bool isWall();
+
+private:
+  CellType m_type = CellType::Empty;
+};
+
+class ConstMap {
+public:
+  ConstMap(const std::vector<std::vector<char>> &field);
+
+  Cell getCell(int x, int y);
+
+private:
+  std::vector<std::vector<Cell>> m_field;
 };
 
 using const_map_ptr = std::unique_ptr<ConstMap>;
 
 class MockMap : public ConstMap {
-    public:
-    MockMap(int w, int h) : ConstMap(w, h) {}
-
-    bool isWall(int x, int y) override {
-        return false;
-    }
+  using ConstMap::ConstMap;
 };
 
-}
+} // namespace common
