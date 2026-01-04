@@ -3,6 +3,6 @@
 #include <iostream>
 
 int main() {
-    map_generator::CombinationsGenerator some_generator(3,3);
+    map_generator::CombinationsGenerator some_generator(4,4);
     some_generator.generate();
 }

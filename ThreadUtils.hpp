@@ -63,7 +63,7 @@ public:
     }
 
     void printStatistics() {
-        std::cout << "THREAD STATISTICS:\n";
+        std::cout << "\nTHREAD STATISTICS:\n";
         for(auto & [_, val] : thread_statistics) {
             std::cout  << val << "\n";
         }
