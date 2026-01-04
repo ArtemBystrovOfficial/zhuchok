@@ -4,5 +4,5 @@ namespace game_runner {
 
     //Keep it simple
     //Interface only for optimizite simulation of bug maze
-    int GameRunner(const common::ConstMap & mp);
+    int GameRunner(const common::BaseMap & mp);
 }

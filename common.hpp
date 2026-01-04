@@ -1,25 +1,61 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 namespace common {
 
-class ConstMap {
-    public:
-    ConstMap(int w, int h) {}
+constexpr size_t MAX_MAP_WIDTH = 30;
+constexpr size_t MAX_MAP_HEIGHT = 20;
 
-    virtual bool isWall(int x, int y) = 0;
+enum class CellType : char { Empty = ' ', Wall = 'W', Bug = 'B' };
+
+class Cell {
+public:
+  Cell(char cell_type) { m_type = static_cast<CellType>(cell_type); }
+  Cell(CellType cell_type) { m_type = cell_type; }
+  Cell() = default;
+  ~Cell() = default;
+
+  bool isWall();
+
+private:
+  CellType m_type = CellType::Empty;
 };
 
-using const_map_ptr = std::unique_ptr<ConstMap>;
+class BaseMap {
+public:
+  virtual Cell &cell(int x, int y) = 0;
 
-class MockMap : public ConstMap {
-    public:
-    MockMap(int w, int h) : ConstMap(w, h) {}
+  virtual unsigned int GetWidth() = 0;
+  virtual unsigned int GetHeight() = 0;
+};
 
-    bool isWall(int x, int y) override {
-        return false;
+using const_map_ptr = std::unique_ptr<BaseMap>;
+
+class GenericMap : public BaseMap {
+public:
+  GenericMap(int h, int w): h_(h), w_(w), data_(h, std::vector<Cell>(w)) {
+    cell(0,0) = Cell(CellType::Bug);
+  };
+  Cell &cell(int x, int y) override {
+    return data_[y][x];
+  }
+
+  void print() {
+    for(auto & row: data_) {
+      for(auto & cell : row) {
+          std::cout << static_cast<char>(cell);
+      }
     }
+  }
+
+  unsigned int GetWidth() override { return w_; }
+  unsigned int GetHeight() override { return h_; }
+
+private:
+  std::vector<std::vector<Cell>> data_;
+  int h_, w_;
 };
 
-}
+} // namespace common

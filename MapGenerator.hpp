@@ -6,18 +6,22 @@
 
 #include <functional>
 #include <iostream>
+#include <bitset>
+#include <bit>
+#include <cmath>
 
 namespace map_generator {
     class MapGenerator {
         using callback_game_result = std::function<void(int, common::const_map_ptr)>;
 
         public:
+            MapGenerator(int w, int h): h_(h), w_(w) {};
 
-            void generate(int h, int w) {
+            void generate() {
                 thread_utils::MaxTracker tracker;
 
                 while(true) {
-                    auto mp = generateImpl(h, w);
+                    auto mp = generateImpl();
 
                     if(!mp)
                         break;
@@ -35,7 +39,7 @@ namespace map_generator {
             }
 
         protected:
-            virtual common::const_map_ptr generateImpl(int h, int w) = 0;
+            virtual common::const_map_ptr generateImpl() = 0;
 
             void callGameRunnerAsync(common::const_map_ptr mp, callback_game_result cb) {
                 struct Task {
@@ -53,19 +57,52 @@ namespace map_generator {
                     (*task)();
                 });
             }
+
+            int h_, w_;
         private:
             thread_utils::ThreadPool pool_;
     };
 
     class SomeGenerator : public MapGenerator {
         public:
-            virtual common::const_map_ptr generateImpl(int h, int w) {
+            SomeGenerator(int h, int w) : MapGenerator(w, h) {};
+
+            virtual common::const_map_ptr generateImpl() {
                 if(!n--) {
                     return nullptr;
                 }
-                return std::make_unique<common::MockMap>(w, h);
+                return std::make_unique<common::GenericMap>(h_, w_);
             }
         private:
             int n = 100000;
+    };
+
+    class CombinationsGenerator : public MapGenerator {
+        public:
+            //x-- x--
+            //--- #--
+            //--- ---
+            CombinationsGenerator(int h, int w) : MapGenerator(w, h) {};
+
+            virtual common::const_map_ptr generateImpl() {
+                if(++cur_comb == max_comb)
+                    return nullptr;
+
+                auto mp = std::make_unique<common::GenericMap>(h_, w_);
+                std::cout << 1 <<" " << cur_comb << std::endl;
+                std::bitset<std::bit_width(common::MAX_MAP_WIDTH * common::MAX_MAP_HEIGHT-2)-1> bt(cur_comb<<1);
+                std::cout << bt <<std::endl;
+                for(int i=1; i < bt.size(); i++) {
+                    int x = i%w_;
+                    int y = i/h_;
+                    std::cout <<"cord :" << x << " " << y << std::endl;
+                    mp->cell(x,y) = common::Cell(common::CellType::Wall);
+                }
+
+                return mp;
+            }
+        private:
+            size_t cur_comb = 0;
+            size_t max_comb = std::pow(2, h_*w_-2);
     };
 }

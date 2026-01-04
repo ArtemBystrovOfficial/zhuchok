@@ -95,7 +95,7 @@ private:
 
 class MaxTracker {
 public:
-    void update_if_better(int new_value, std::unique_ptr<common::ConstMap> new_map) {
+    void update_if_better(int new_value, std::unique_ptr<common::BaseMap> new_map) {
 
         int current_max = max_value.load(std::memory_order_acquire);
         if (new_value <= current_max) {
@@ -113,7 +113,7 @@ public:
         }
     }
 
-    std::pair<int, const common::ConstMap *> get_best() {
+    std::pair<int, const common::BaseMap *> get_best() {
         std::lock_guard lock(map_mutex);
 
         int value = max_value.load(std::memory_order_relaxed);
@@ -128,7 +128,7 @@ private:
     std::atomic_int max_value{0};
 
     std::mutex map_mutex;
-    std::unique_ptr<common::ConstMap> best_map;
+    std::unique_ptr<common::BaseMap> best_map;
 };
 
 }
