@@ -22,11 +22,15 @@ public:
 
   bool isWall();
 
+  // Количество посещений жука клеткой
+  unsigned int GetSteps();
+
 private:
-private:
+  unsigned int m_steps = 0; // количество раз сколько
   CellType m_type = CellType::Empty;
 };
 
+// Базовый класс для определния карты
 class BaseMap {
 public:
   virtual Cell &cell(int x, int y) = 0;
