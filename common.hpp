@@ -1,8 +1,8 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <vector>
-#include <iostream>
 
 namespace common {
 
@@ -18,14 +18,19 @@ public:
   Cell() = default;
   ~Cell() = default;
 
-  CellType getCell() {return m_type;}
+  CellType getCell() { return m_type; }
 
   bool isWall();
 
+  // Количество посещений жука клеткой
+  unsigned int GetSteps();
+
 private:
+  unsigned int m_steps = 0; // количество раз сколько
   CellType m_type = CellType::Empty;
 };
 
+// Базовый класс для определния карты
 class BaseMap {
 public:
   virtual Cell &cell(int x, int y) = 0;
@@ -39,21 +44,19 @@ using const_map_ptr = std::unique_ptr<BaseMap>;
 
 class GenericMap : public BaseMap {
 public:
-  GenericMap(int h, int w): h_(h), w_(w), data_(h, std::vector<Cell>(w)) {
-    cell(0,0) = Cell(CellType::Bug);
+  GenericMap(int h, int w) : h_(h), w_(w), data_(h, std::vector<Cell>(w)) {
+    cell(0, 0) = Cell(CellType::Bug);
   };
-  Cell &cell(int x, int y) override {
-    return data_[y][x];
-  }
+  Cell &cell(int x, int y) override { return data_[y][x]; }
 
   const Cell &getCell(int x, int y) override {
     return data_[y][x];
   }
 
   void print() {
-    for(auto & row: data_) {
-      for(auto & cell : row) {
-          std::cout << static_cast<char>(cell.getCell());
+    for (auto &row : data_) {
+      for (auto &cell : row) {
+        std::cout << static_cast<char>(cell.getCell());
       }
       std::cout << std::endl;
     }
