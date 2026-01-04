@@ -1,8 +1,9 @@
 #include "GameRunner.hpp"
-
+#include <atomic>
 namespace game_runner {
 
     int GameRunner(const common::ConstMap & mp) {
-        return 0; //TODO
+        static std::atomic_int count = 0;
+        return count++; //TODO
     }
 }
