@@ -39,6 +39,47 @@ namespace map_generator {
             }
 
         protected:
+
+            //First important check
+            //bool isPathExists(const common::GenericMap& grid) {
+//
+            //    int h = grid.GetHeight();
+            //    int w = grid.GetWidth();
+//
+            //    if (grid.cell(0,0) == 1 || grid[h-1][w-1] == 1) {
+            //        return false;
+            //    }
+//
+            //    std::vector<std::vector<bool>> visited(h, std::vector<bool>(w, false));
+            //    std::queue<std::pair<int, int>> q;
+//
+            //    q.push({0, 0});
+            //    visited[0][0] = true;
+//
+            //    const int dirs[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+            //    while (!q.empty()) {
+            //        auto [y, x] = q.front();
+            //        q.pop();
+//
+//
+            //        if (y == h-1 && x == w-1) {
+            //            return true;
+            //        }
+//
+            //        for (int i = 0; i < 4; ++i) {
+            //            int ny = y + dirs[i][0];
+            //            int nx = x + dirs[i][1];
+//
+            //            if (ny >= 0 && ny < h && nx >= 0 && nx < w &&
+            //                grid[ny][nx] == 0 && !visited[ny][nx]) {
+            //                visited[ny][nx] = true;
+            //                q.push({ny, nx});
+            //            }
+            //        }
+            //    }
+            //    return false;
+            //}
+
             virtual common::const_map_ptr generateImpl() = 0;
 
             void callGameRunnerAsync(common::const_map_ptr mp, callback_game_result cb) {
@@ -89,15 +130,15 @@ namespace map_generator {
                     return nullptr;
 
                 auto mp = std::make_unique<common::GenericMap>(h_, w_);
-                std::cout << 1 <<" " << cur_comb << std::endl;
-                std::bitset<std::bit_width(common::MAX_MAP_WIDTH * common::MAX_MAP_HEIGHT-2)-1> bt(cur_comb<<1);
-                std::cout << bt <<std::endl;
-                for(int i=1; i < bt.size(); i++) {
-                    int x = i%w_;
+                std::bitset<common::MAX_MAP_WIDTH * common::MAX_MAP_HEIGHT-2> bt(cur_comb<<1);
+                for(int i=0; i < bt.size(); i++) {
+                    int x = i%h_;
                     int y = i/h_;
-                    std::cout <<"cord :" << x << " " << y << std::endl;
-                    mp->cell(x,y) = common::Cell(common::CellType::Wall);
+                    if(bt[i])
+                        mp->cell(y,x) = common::Cell(common::CellType::Wall);
                 }
+
+                mp->print();
 
                 return mp;
             }

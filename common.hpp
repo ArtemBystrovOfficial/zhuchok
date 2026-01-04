@@ -9,7 +9,7 @@ namespace common {
 constexpr size_t MAX_MAP_WIDTH = 30;
 constexpr size_t MAX_MAP_HEIGHT = 20;
 
-enum class CellType : char { Empty = ' ', Wall = 'W', Bug = 'B' };
+enum class CellType : char { Empty = '-', Wall = 'W', Bug = 'B' };
 
 class Cell {
 public:
@@ -29,9 +29,10 @@ private:
 class BaseMap {
 public:
   virtual Cell &cell(int x, int y) = 0;
+  virtual const Cell &getCell(int x, int y) = 0;
 
-  virtual unsigned int GetWidth() = 0;
-  virtual unsigned int GetHeight() = 0;
+  virtual unsigned int GetWidth() const = 0;
+  virtual unsigned int GetHeight() const = 0;
 };
 
 using const_map_ptr = std::unique_ptr<BaseMap>;
@@ -45,6 +46,10 @@ public:
     return data_[y][x];
   }
 
+  const Cell &getCell(int x, int y) override {
+    return data_[y][x];
+  }
+
   void print() {
     for(auto & row: data_) {
       for(auto & cell : row) {
@@ -52,10 +57,11 @@ public:
       }
       std::cout << std::endl;
     }
+    std::cout << std::endl;
   }
 
-  unsigned int GetWidth() override { return w_; }
-  unsigned int GetHeight() override { return h_; }
+  unsigned int GetWidth() const override { return w_; }
+  unsigned int GetHeight() const override { return h_; }
 
 private:
   std::vector<std::vector<Cell>> data_;
