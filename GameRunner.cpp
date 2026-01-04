@@ -8,7 +8,7 @@ int GameRunner(const common::BaseMap &mp) {
   return count++; // TODO
 }
 
-Direction GetDirection(common::GenericMap &gm, int bug_x, int bug_y) {
+Direction GetDirection(common::GenericMap &gm, unsigned int bug_x, unsigned int bug_y) {
   auto down_cell_steps = gm.cell(bug_x, bug_y + 1).GetSteps();
   auto right_cell_steps = gm.cell(bug_x + 1, bug_y).GetSteps();
   auto top_cell_steps = gm.cell(bug_x, bug_y - 1).GetSteps();
