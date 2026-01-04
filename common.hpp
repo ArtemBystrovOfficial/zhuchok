@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <iostream>
 
 namespace common {
 
@@ -16,6 +17,8 @@ public:
   Cell(CellType cell_type) { m_type = cell_type; }
   Cell() = default;
   ~Cell() = default;
+
+  CellType getCell() {return m_type;}
 
   bool isWall();
 
@@ -45,8 +48,9 @@ public:
   void print() {
     for(auto & row: data_) {
       for(auto & cell : row) {
-          std::cout << static_cast<char>(cell);
+          std::cout << static_cast<char>(cell.getCell());
       }
+      std::cout << std::endl;
     }
   }
 
