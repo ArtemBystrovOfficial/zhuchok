@@ -3,6 +3,27 @@
 #include <iostream>
 
 int main() {
-    map_generator::CombinationsGenerator some_generator(4,4);
-    some_generator.generate();
+    std::unique_ptr<common::BaseMap> mp = std::make_unique<common::GenericMap>(2, 2);
+    mp->cell(0,1) = common::CellType::Wall;
+
+    int proc = 15;
+    int steps = 10'000;
+
+    for(int i=0;i<13;i++) {
+        map_generator::EvoltuionGenerator ev_gen(std::move(mp),steps,proc,i>8,3); //i>16
+        mp = ev_gen.generate();
+    }
+    mp->print(true);
+
+    //for(int i=0;i<27;i++) {
+    //    map_generator::EvoltuionGenerator ev_gen(std::move(mp),steps,proc,i>16); //i>16
+    //    mp = ev_gen.generate();
+    //}
+    //mp->print(true);
+
+    //for(int i=0;i<27;i++) {
+    //    map_generator::EvoltuionGenerator ev_gen(std::move(mp),steps,proc,i<10); //<10
+    //    mp = ev_gen.generate();
+    //}
+    //mp->print(true);
 }

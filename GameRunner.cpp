@@ -48,12 +48,18 @@ namespace game_runner {
         while (true) {
             // Проверяем, достигли ли целевой точки (28,6) как в оригинальной функции
             if (bugPos.x == mp.GetWidth() - 1 && bugPos.y == mp.GetHeight() - 1) {
+                for(int i=0;i<mp.GetHeight();i++)
+                    for(int j=0;j<mp.GetWidth();j++)
+                        mp.cell(j,i).setVisitCount(visitCounts[i][j]);
                 return stepCounter;
             }
 
             // Проверяем, не застряли ли мы (например, если жук в тупике)
             stepCounter++;
             if (stepCounter > 10000) { // Защита от бесконечного цикла
+                for(int i=0;i<mp.GetHeight();i++)
+                    for(int j=0;j<mp.GetWidth();j++)
+                        mp.cell(j,i).setVisitCount(visitCounts[i][j]);
                 return stepCounter;
             }
 
@@ -179,6 +185,9 @@ namespace game_runner {
                     newDir = LEFT;
                 } else {
                     // Полный тупик - возвращаем текущий счетчик
+                    for(int i=0;i<mp.GetHeight();i++)
+                        for(int j=0;j<mp.GetWidth();j++)
+                            mp.cell(j,i).setVisitCount(visitCounts[i][j]);
                     return stepCounter;
                 }
             }
@@ -188,6 +197,10 @@ namespace game_runner {
             currentDir = newDir;
         }
 
+
+        for(int i=0;i<mp.GetHeight();i++)
+            for(int j=0;j<mp.GetWidth();j++)
+                mp.cell(j,i).setVisitCount(visitCounts[i][j]);
         return stepCounter;
     }
 }

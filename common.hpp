@@ -43,7 +43,7 @@ class BaseMap {
 public:
   virtual Cell &cell(int x, int y) = 0;
   virtual const Cell &getCell(int x, int y) const = 0;
-  virtual void print() const {};
+  virtual void print(bool print_map = false) const {};
 
   virtual unsigned int GetWidth() const = 0;
   virtual unsigned int GetHeight() const = 0;
@@ -62,14 +62,25 @@ public:
     return data_[y][x];
   }
 
-  void print() const override {
-    for(auto & row: data_) {
-      for(auto & cell : row) {
-          std::cout << static_cast<char>(cell.getCellType());
+  void print(bool print_map) const override {
+    std::cout << h_ << "x" << w_ << " ";
+    if(print_map) {
+      std::cout << std::endl;
+      for(auto & row: data_) {
+        for(auto & cell : row) {
+            std::cout << static_cast<char>(cell.getCellType());
+        }
+        std::cout << std::endl;
+      }
+      std::cout << std::endl;
+      for(auto & row: data_) {
+        for(auto & cell : row) {
+            std::cout << static_cast<int>(cell.getVisitCount()) << " ";
+        }
+        std::cout << std::endl;
       }
       std::cout << std::endl;
     }
-    std::cout << std::endl;
   }
 
   unsigned int GetWidth() const override { return w_; }

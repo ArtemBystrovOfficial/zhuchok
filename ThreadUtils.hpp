@@ -113,7 +113,7 @@ public:
         }
     }
 
-    std::pair<int, const common::BaseMap *> get_best() {
+    std::pair<int, common::const_map_ptr> get_best() {
         std::lock_guard lock(map_mutex);
 
         int value = max_value.load(std::memory_order_relaxed);
@@ -121,7 +121,7 @@ public:
             return {0, nullptr};
         }
 
-        return {value, best_map.get()};
+        return {value, std::move(best_map)};
     }
 
 private:
