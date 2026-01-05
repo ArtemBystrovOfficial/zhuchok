@@ -40,7 +40,7 @@ namespace map_generator {
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 //pool_.printStatistics();
                 //std::cout << "BEST MAP:\n";
-                best_map->print(true);
+                best_map->print();
                 //std::cout << "BEST SCORE:\n";
                 std::cout << best_score << std::endl;
 
@@ -349,6 +349,104 @@ namespace map_generator {
             int cur = 0;
             bool only_right_;
             int width_layer_;
+    };
+
+
+    class EvoltuionFlatGenerator : public MapGenerator {
+        public:
+            EvoltuionFlatGenerator(common::const_map_ptr map, int count_era)
+            : MapGenerator(map->GetWidth(), map->GetHeight()), map_(std::move(map)),
+            count_era_(count_era)  {
+                srand(time(0));
+            };
+
+            virtual common::const_map_ptr generateImpl() {
+                while(true) {
+
+                    auto mp = std::make_unique<common::GenericMap>(h_, w_);
+
+                    for(int y = 0; y < map_->GetHeight(); y++) {
+                        for(int x = 0; x < map_->GetWidth(); x++) {
+                            mp->cell(x,y).setCellType(map_->getCell(x,y).getCellType());
+                        }
+                    }
+
+
+                    int random_x = rand() % w_;
+                    int random_y = rand() % h_;
+                    mp->cell(random_x,random_y).setCellType(common::CellType::Wall);
+
+                    if(++cur > count_era_)
+                        break;
+
+                    if(!isPathExists(*mp))
+                        continue;
+
+                    mp->cell(0,0).setCellType(common::CellType::Bug);
+                    mp->cell(w_-1,h_-1).setCellType(common::CellType::Empty);
+
+                    return mp;
+                }
+                return nullptr;
+            }
+
+        private:
+            common::const_map_ptr map_;
+            int cur = 0;
+            int count_era_ = -1;
+    };
+
+    class MutationGenerator : public MapGenerator {
+        public:
+            MutationGenerator(common::const_map_ptr map, int count_era)
+            : MapGenerator(map->GetWidth(), map->GetHeight()), map_(std::move(map)),
+            count_era_(count_era)  {
+                srand(time(0));
+            };
+
+            virtual common::const_map_ptr generateImpl() {
+                while(true) {
+
+                    auto mp = std::make_unique<common::GenericMap>(h_, w_);
+
+                    for(int y = 0; y < map_->GetHeight(); y++) {
+                        for(int x = 0; x < map_->GetWidth(); x++) {
+                            mp->cell(x,y).setCellType(map_->getCell(x,y).getCellType());
+                        }
+                    }
+
+                    int random_x, random_y;
+                    do {
+                        random_x = rand() % w_;
+                        random_y = rand() % h_;
+                    } while(map_->getCell(random_x, random_y).getCellType() != common::CellType::Wall);
+                    mp->cell(random_x, random_y) = common::CellType::Empty;
+
+                    do {
+                        random_x = rand() % w_;
+                        random_y = rand() % h_;
+                    } while(map_->getCell(random_x, random_y).getCellType() != common::CellType::Empty);
+                    mp->cell(random_x, random_y) = common::CellType::Wall;
+
+
+                    if(++cur > count_era_)
+                        break;
+
+                    if(!isPathExists(*mp))
+                        continue;
+
+                    mp->cell(0,0).setCellType(common::CellType::Bug);
+                    mp->cell(w_-1,h_-1).setCellType(common::CellType::Empty);
+
+                    return mp;
+                }
+                return nullptr;
+            }
+
+        private:
+            common::const_map_ptr map_;
+            int cur = 0;
+            int count_era_ = -1;
     };
 
 }
